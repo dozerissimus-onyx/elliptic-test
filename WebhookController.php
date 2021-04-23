@@ -10,14 +10,14 @@ class WebhookController extends Controller
 {
     public function store()
     {
-        $hash = 'accf5c09cc027339a3beb2e28104ce9f406ecbbd29775b4a1a17ba213f1e035e';
-        $address = '15Hm2UEPaEuiAmgyNgd5mF3wugqLsYs3Wn';
+		//example data from app.elliptic.co
+        $exampleHash = 'accf5c09cc027339a3beb2e28104ce9f406ecbbd29775b4a1a17ba213f1e035e';
+        $exampleAddress = '15Hm2UEPaEuiAmgyNgd5mF3wugqLsYs3Wn';
 
-        $params = ['hash' => $hash, 'address' => $address];
+        $params = ['hash' => $exampleHash, 'address' => $exampleAddress];
 
         $elliptic = new Elliptic();
         $elliptic->setParams($params);
-//        $elliptic->getRiskRules();
         $elliptic->synchronous();
 
         $validator = Validator::make($params, [

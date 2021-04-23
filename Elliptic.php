@@ -17,11 +17,12 @@ class Elliptic
     protected $payload;
     protected $uri;
     protected $method;
+    protected $baseUri = 'https://aml-api.elliptic.co';
 
     public function __construct()
     {
         $this->client = new Client([
-            'base_uri' => 'https://aml-api.elliptic.co'
+            'base_uri' => $this->baseUri
         ]);
     }
 
