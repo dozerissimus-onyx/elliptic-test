@@ -48,15 +48,10 @@ class Elliptic
      */
     protected $method;
 
-    /**
-     * @var string $baseUri
-     */
-    protected $baseUri = 'https://aml-api.elliptic.co';
-
     public function __construct()
     {
         $this->client = new Client([
-            'base_uri' => $this->baseUri
+            'base_uri' => config('elliptic.baseUri') //https://aml-api.elliptic.co
         ]);
     }
 
@@ -107,11 +102,11 @@ class Elliptic
     protected function request() {
         $ts = time() * 1000;
 
-        $signature = $this->getSignature(env('ELLIPTIC_SECRET'), $ts, $this->method, $this->uri, $this->payload ? json_encode($this->payload) : '{}');
+        $signature = $this->getSignature(config('elliptic.secret'), $ts, $this->method, $this->uri, $this->payload ? json_encode($this->payload) : '{}');
 
         $headers = [
             'Content-Type' => 'application/json',
-            'x-access-key' => env('ELLIPTIC_KEY'),
+            'x-access-key' => config('elliptic.key'),
             'x-access-sign' => $signature,
             'x-access-timestamp' => $ts
         ];
