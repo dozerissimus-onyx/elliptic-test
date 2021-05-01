@@ -27,7 +27,7 @@ class RiskScoreRule implements Rule
     public function passes($attribute, $value)
     {
         $deposit = Deposit::whereHash($value)->first();
-        return $deposit && $deposit->risk_score && $deposit->risk_score > Elliptic::RISK_HIGH;
+        return $deposit && $deposit->risk_score && $deposit->risk_score > config('elliptic.high_risk_value');
     }
 
     /**
