@@ -71,7 +71,7 @@ class Elliptic
         $this->payload = [
             "customer_reference" => $this->params['customer'] ?? 'testCustomer',
             "subject" => [
-                "asset" => strtoupper($this->params['asset']) ?? 'BTC',
+                "asset" => strtoupper($this->params['asset'] ?? 'BTC'),
                 "hash" => $this->params['hash'] ?? '',
                 "output_address" => $this->params['address'] ?? '',
                 "output_type" => "address",

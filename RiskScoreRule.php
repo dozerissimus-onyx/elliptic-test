@@ -7,16 +7,14 @@ use Illuminate\Contracts\Validation\Rule;
 
 class RiskScoreRule implements Rule
 {
-    private $model;
-
     /**
      * Create a new rule instance.
      *
      * @return void
      */
-    public function __construct($model)
+    public function __construct()
     {
-        $this->model = $model;
+
     }
 
     /**
@@ -28,7 +26,8 @@ class RiskScoreRule implements Rule
      */
     public function passes($attribute, $value)
     {
-        return $this->model->getRiskScore() && $this->model->getRiskScore() < Elliptic::RISK_HIGH;
+        $deposit = Deposit::whereHash($value)->first();
+        return $deposit && $deposit->risk_score && $deposit->risk_score > Elliptic::RISK_HIGH;
     }
 
     /**
