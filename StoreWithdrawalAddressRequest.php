@@ -2,7 +2,6 @@
 namespace App\Http\Requests;
 
 use App\Rules\RiskScoreRule;
-use App\Service\Elliptic;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreWithdrawalAddressRequest extends FormRequest
@@ -16,9 +15,8 @@ class StoreWithdrawalAddressRequest extends FormRequest
     {
         return [
             'currency_code' => '',
-            'address' => '',
+            'address' => new RiskScoreRule($this),
             'address_tag' => '',
-            'hash' => new RiskScoreRule()
         ];
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreWithdrawalAddressRequest;
-use App\Rules\RiskScoreRule;
 use App\Service\Elliptic;
 use Illuminate\Support\Facades\Validator;
 
@@ -31,7 +30,7 @@ class WebhookController extends Controller
 
         $elliptic = new Elliptic();
         $elliptic->setParams($params);
-        $elliptic->synchronous();
+        $elliptic->transactionSynchronous();
 
         //I think inside this static method deposit is saved
         Deposit::create([

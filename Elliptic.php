@@ -63,9 +63,9 @@ class Elliptic
     }
 
     /**
-     * Make request and give risk score
+     * Make request and give transaction risk score
      */
-    public function synchronous() {
+    public function transactionSynchronous() {
         $this->method = 'POST';
         $this->uri = '/v2/analyses/synchronous';
         $this->payload = [
@@ -78,6 +78,25 @@ class Elliptic
                 "type" => "transaction"
             ],
             "type" => $this->params['type'] ?? self::TYPE_DESTINATION
+        ];
+
+        $response = $this->request();
+        $this->riskScore = $response['risk_score'] ?? null;
+    }
+
+    /**
+     * Make request and give wallet risk score
+     */
+    public function walletSynchronous() {
+        $this->method = 'POST';
+        $this->uri = '/v2/wallet/synchronous';
+        $this->payload = [
+            "subject" => [
+                "asset" => strtoupper($this->params['asset'] ?? 'BTC'),
+                "hash" => $this->params['address'] ?? '',
+                "type" => "address"
+            ],
+            "type" => "wallet_exposure"
         ];
 
         $response = $this->request();
@@ -114,6 +133,7 @@ class Elliptic
         $response = $this->client->request($this->method, $this->uri, [
             'headers' => $headers,
             'json' => $this->payload,
+            'debug' => true
         ]);
 
         return json_decode($response->getBody(), true);

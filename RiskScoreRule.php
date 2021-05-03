@@ -7,14 +7,23 @@ use Illuminate\Contracts\Validation\Rule;
 
 class RiskScoreRule implements Rule
 {
+    protected $request;
+    protected $elliptic;
+
     /**
      * Create a new rule instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($request)
     {
-
+        $this->request = $request;
+        $this->elliptic = new Elliptic();
+        $this->elliptic->setParams([
+            'address' => $request->address,
+            'asset' => $request->currency_code
+        ]);
+        $this->elliptic->walletSynchronous();
     }
 
     /**
@@ -26,8 +35,7 @@ class RiskScoreRule implements Rule
      */
     public function passes($attribute, $value)
     {
-        $deposit = Deposit::whereHash($value)->first();
-        return $deposit && $deposit->risk_score && $deposit->risk_score > config('elliptic.high_risk_value');
+        return $this->elliptic->getRiskScore() && $this->elliptic->getRiskScore() > Elliptic::RISK_HIGH;
     }
 
     /**
