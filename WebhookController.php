@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreWithdrawalAddressRequest;
+use App\Rules\RiskScoreRule;
 use App\Service\Elliptic;
+use App\Service\SumSub;
+use App\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class WebhookController extends Controller
@@ -50,5 +54,31 @@ class WebhookController extends Controller
         $address->save();
 
         return;
+    }
+
+    public function moonpay_customer_data_sync() {
+        $applicantId = '';
+        $inspectionId = '';
+
+        $sumSub = new SumSub();
+
+        $applicantDocs = $sumSub->getApplicantStatus($applicantId);
+
+        $response = [];
+
+        foreach ($applicantDocs as $data) {
+            foreach ($data['imageIds'] as $imageId) {
+                if ($data['imageReviewResults'][$imageId]['reviewAnswer'] === SumSub::ANSWER_GREEN && array_key_exists($data['idDocType'], SumSub::$docTypes)) {
+                    $response['files'][] = [
+                        'type' => SumSub::$docTypes[$data['idDocType']],
+                        'side' => null,
+                        'country' => $data['country'],
+                        'downloadLink' => $sumSub->downloadImage($inspectionId, $imageId)
+                    ];
+                }
+            }
+        }
+
+        return $response;
     }
 }
